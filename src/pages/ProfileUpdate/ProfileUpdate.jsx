@@ -2,6 +2,7 @@ import React from "react";
 import "./ProfileUpdate.css";
 import assets from "../../assets/assets";
 const ProfileUpdate = () => {
+  
   return (
     <div className="profile">
       <div className="profile-container">
