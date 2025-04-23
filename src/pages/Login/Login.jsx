@@ -1,18 +1,38 @@
 import React, { useState } from "react";
 import "./Login.css";
 import assets from "../../assets/assets";
+import { signUp, login } from "../../config/firebase";
 const Login = () => {
   const [currentState, setCurrentState] = useState("Sign Up");
-  console.log(currentState);
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const onSubmitHandler = (event) => {
+    event.preventDefault();
+    if (currentState === "Sign Up") {
+      signUp(userName, email, password);
+    } else {
+      login(email, password);
+    }
+  };
   return (
     <div className="login">
       <img src={assets.logo_big} alt="" className="logo" />
-      <form className="login-form">
+      <form
+        onSubmit={(e) => {
+          onSubmitHandler(e);
+        }}
+        className="login-form"
+      >
         <h2>{currentState}</h2>
         {currentState === "Sign Up" ? (
           <input
             type="text"
             placeholder="username"
+            onChange={(e) => {
+              setUserName(e.target.value);
+            }}
+            value={userName}
             className="form-input"
             required
           />
@@ -20,12 +40,20 @@ const Login = () => {
         <input
           type="email"
           placeholder="Email Adrdress"
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
+          value={email}
           className="form-input"
           required
         />
         <input
           type="password"
           placeholder="Password"
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
+          value={password}
           className="form-input"
           required
         />
