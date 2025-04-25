@@ -10,7 +10,6 @@ const upload = async (file) => {
   const storageRef = ref(storage, `images/${Date.now() + file.name}`);
 
   const uploadTask = uploadBytesResumable(storageRef, file);
-
   uploadTask.on(
     "state_changed",
     (snapshot) => {
@@ -28,7 +27,7 @@ const upload = async (file) => {
     (error) => {},
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        resolve(downloadURL);
+        return downloadURL;
       });
     }
   );

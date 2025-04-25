@@ -3,8 +3,10 @@ import "./ProfileUpdate.css";
 import { onAuthStateChanged } from "firebase/auth";
 import assets from "../../assets/assets";
 import { auth, db } from "../../config/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import upload from "../../lib/upload";
 const ProfileUpdate = () => {
   const navigate = useNavigate();
   const [image, setImage] = useState(false);
@@ -12,6 +14,23 @@ const ProfileUpdate = () => {
   const [bio, setBio] = useState("");
   const [uid, setUid] = useState("");
   const [prevImage, setPrevImage] = useState("");
+
+  const profileUpdate = async (event) => {
+    event.preventDefault();
+    try {
+      if (!prevImage && !image) {
+        toast.error("Upload your profile image");
+      }
+      const docRef = doc(db, "uusers", uid);
+      if (image) {
+        const imgUrl = await upload(image);
+        setPrevImage(imgUrl);
+        await updateDoc(docRef, { avatar: imgUrl, bio: bio, name: name });
+      } else {
+        await updateDoc(docRef, { bio: bio, name: name });
+      }
+    } catch (error) {}
+  };
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -36,7 +55,7 @@ const ProfileUpdate = () => {
   return (
     <div className="profile">
       <div className="profile-container">
-        <form>
+        <form onSubmit={profileUpdate}>
           <h3>Profile Details</h3>
           <label htmlFor="avatar">
             <input
